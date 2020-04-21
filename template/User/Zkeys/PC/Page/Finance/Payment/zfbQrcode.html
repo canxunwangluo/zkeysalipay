@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<meta name="renderer" content="webkit">
+	<include file="./__common__/__sourcesInclude__" />
+	<script src="__THEME_STATIC__/lib/plugin/qrcode.js"></script>
+
+	<title>用户中心 - {$common_site_name}</title>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		body{
+			font-size:14px;
+			font-family:microsoft yahei;
+			color:#555
+		}
+		h1 {
+			font-size:16px;
+			text-align:center;
+			height:30px;
+			line-height:30px;
+			font-weight:normal;
+			margin-top:20px;
+		}
+		h2 {
+			font-size:16px;
+			text-align:center;
+			height:30px;
+			line-height:30px;
+			font-weight:normal;
+		}
+		h2 strong{
+			color:#f60;
+			padding-right:4px;
+		}
+		a {
+			text-decoration:none;
+			color:#385487;
+		}
+		.title h1 {
+			font-size:22px;
+			font-weight:bold;
+			padding:0;
+			margin:0;
+			line-height:1.2;
+			color:#1f1f1f;
+		}
+		#order-msg{text-align:center;}
+
+		.qrcode_logo{
+			/* background:url("__THEME_STATIC__/img/ucModule/finance/qrcode_logo.png") no-repeat center center; */
+			height:50px;
+			width:50px;
+			position: absolute;
+			top: 50%;
+			margin-top: -25px;
+			left: 50%;
+			margin-left: -25px;
+
+		}
+		#qrcode {
+			padding: 0!important;
+		}
+	</style>
+</head>
+<body class="body-reset">
+<div id="contentBox" data-render="false"></div>
+<script type="text/html" id="contentTemplate">
+	<input id="text" type="hidden" value="{{payment.qrcodeUrl}}" />
+	<input id="orderNo" type="hidden" value="{{payment.orderNo}}" />
+
+	<h1>请使用支付宝“扫一扫”功能扫描下方二维码进行支付</h1>
+	<h2>本次充值金额：<strong>{{payment.total_fee}}</strong>元</h2>
+	<div id="order-msg" style="">
+		<div id="qrcode" style="width:240px; height:240px; padding:5px; background:#fff; margin:0 auto; border:1px solid #ccc;margin-top:20px;position:relative">
+			<div class="qrcode_logo">
+					<if condition="$common_pay_wechat_logo">
+							<img src="{$common_pay_wechat_logo}" alt="" srcset="" style="width:100%;height:100%">
+						<else/>
+						<img src="__THEME_STATIC__/img/ucModule/finance/qrcode_logo.png" alt="" srcset="" style="width:100%;height:100%">
+					</if>
+				
+			</div>
+		</div>
+
+	</div>
+	<div id="status" style="text-align:center;height:30px;line-height:30px;color:#999;margin-top:10px">
+		等待支付
+	</div>
+</script>
+
+<script type="text/javascript">
+	$(function (){
+		// 手动模板渲染
+		NY.proxyRenderer.renderContent();
+
+		//二维码属性设置
+		var qrcode = new QRCode($("#qrcode")[0], {
+			width : 240,
+			height : 240
+		});
+		//二维码生成
+		function makeCode () {
+			var elText = document.getElementById("text");
+			if (!elText.value) {
+				alert("二维码生成失败");
+				elText.focus();
+				return;
+			}
+			qrcode.makeCode(elText.value);
+		}
+		makeCode();
+		//订单异步查询
+		//window.setTimeout(function(){
+		//orderquery(<'%=out_trade_no%>);
+		//},1000);
+	});
+
+</script>
+<script>
+	var nyData = {$nydata};
+</script>
+</body>
+</html>
